@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc16ccc33f430c94cb93f72205e48e95, type: 3}
+  m_Name: TestDungeon
+  m_EditorClassIdentifier: 
+  maxNumberOfRooms: 10
+  minNumberOfRooms: 9
+  orientation: 0
+  distanceToBoss: 5
+  roomPrefab: {fileID: 6632563192212638834, guid: 8c1d73d7bd665cc45bf3ce916cbecb8d, type: 3}
+  corridorStepPrefab: {fileID: 8928800090042068076, guid: edf9b7766be9ced4f843290bffd38bca, type: 3}
+  distanceBetweenRooms: 4
