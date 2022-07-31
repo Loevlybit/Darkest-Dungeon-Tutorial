@@ -17,5 +17,6 @@ MonoBehaviour:
   orientation: 0
   distanceToBoss: 5
   roomPrefab: {fileID: 6632563192212638834, guid: 8c1d73d7bd665cc45bf3ce916cbecb8d, type: 3}
-  corridorStepPrefab: {fileID: 8928800090042068076, guid: edf9b7766be9ced4f843290bffd38bca, type: 3}
-  distanceBetweenRooms: 4
+  horizontalCorridor: {fileID: 8415222327208936808, guid: 90fc1358d5eb381408dda889a72ecb02, type: 3}
+  verticalCorridor: {fileID: 30692673145618406, guid: 197578ee4b046c1479b304b1f0e685e1, type: 3}
+  distanceBetweenRooms: 200

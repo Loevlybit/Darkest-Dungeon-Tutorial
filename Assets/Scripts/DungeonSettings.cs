@@ -10,7 +10,8 @@ public class DungeonSettings : ScriptableObject
     [SerializeField] public DungeonOrientation orientation;
     [SerializeField] public int distanceToBoss;
     [SerializeField] public GameObject roomPrefab;
-    [SerializeField] public GameObject corridorStepPrefab;
+    [SerializeField] public GameObject horizontalCorridor;
+    [SerializeField] public GameObject verticalCorridor;
     [SerializeField] public float distanceBetweenRooms = 4f;
 
 }
