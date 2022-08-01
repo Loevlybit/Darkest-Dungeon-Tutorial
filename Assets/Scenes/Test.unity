@@ -567,7 +567,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f881e5c338c5e65499d93656a1708d2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dungeonSettings: {fileID: 11400000, guid: 662f759b620b31e44ae7776798c46b65, type: 2}
+  settings: {fileID: 11400000, guid: 662f759b620b31e44ae7776798c46b65, type: 2}
   mapContent: {fileID: 1326220293}
 --- !u!4 &1446065759
 Transform:
