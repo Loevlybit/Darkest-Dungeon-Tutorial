@@ -4,22 +4,28 @@ using UnityEngine;
 
 public class Corridor 
 {
-    private Room[] connectedRooms = new Room[2];
-    private List<CorridorStep> corridorSteps = new List<CorridorStep>();
+    private Room room1;
+    private Room room2;
+    private CorridorOrientation orientation;
 
-    public void AddConnectedRooms(Room room1, Room room2)
+    public Corridor(Room room1, Room room2)
     {
-        connectedRooms[0] = room1;
-        connectedRooms[1] = room2;
+        this.room1 = room1;
+        this.room2 = room2;
+
+        if (room1.Coords.x != room2.Coords.x)
+            orientation = CorridorOrientation.Horizontal;
+        else
+            orientation = CorridorOrientation.Vertical;
     }
 
-    public void AddCorridorSteps(CorridorStep step)
-    {
-        corridorSteps.Add(step);
-    }
+    public CorridorOrientation Orientation { get => orientation; }
+    public Room Room1 { get => room1; }
+    public Room Room2 { get => room2; }
 }
 
-public class CorridorStep
+public enum CorridorOrientation
 {
-    public GameObject instance;
+    Vertical,
+    Horizontal
 }

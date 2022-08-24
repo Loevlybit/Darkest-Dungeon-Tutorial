@@ -7,7 +7,6 @@ using Random = UnityEngine.Random;
 public class DungeonGenerator : MonoBehaviour
 {
     [SerializeField] DungeonSettings settings;
-    [SerializeField] GameObject mapContent;
 
     private void Start()
     {
@@ -18,30 +17,22 @@ public class DungeonGenerator : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            ClearDungeon();
-            CreateDungeon();
+            Dungeon dungeon = CreateDungeon(settings);
+            FindObjectOfType<MapUI>().CreateDungeonMapUI(dungeon);
         }
     }
 
-    private void ClearDungeon()
-    {
-        foreach (Transform child in mapContent.transform)
-        {
-            Destroy(child.gameObject);
-        }
-    }
 
-    public Dungeon CreateDungeon() 
+    public Dungeon CreateDungeon(DungeonSettings settings) 
     {
         DungeonConstuctorParameters parameters = new DungeonConstuctorParameters();
         parameters.rooms = CreateRooms();
         parameters.coordsToRoom = CreateCoordsToRoomDictionary(parameters.rooms);
         parameters.roomToConnectedRooms = ConnectRooms(parameters.rooms);
         parameters.roomConnections = CreateRoomConnectionsDict(parameters.roomToConnectedRooms);
-        parameters.corridors = CreateCorridors(parameters.roomConnections);
+        parameters.corridors = CreateCorridors(parameters.roomToConnectedRooms);
         
-        Dungeon newDungeon = new Dungeon(parameters);
-        return newDungeon;
+        return new Dungeon(parameters);
     }
     public List<Room> CreateRooms()
     {
@@ -54,28 +45,13 @@ public class DungeonGenerator : MonoBehaviour
             if (rooms.Count > 0) currentCoords = GetNextCoords(currentCoords);
             if (usedCoords.Contains(currentCoords)) continue;
 
-            Room room = CreateRoom(rooms, settings, currentCoords);
-            usedCoords.Add(currentCoords);
+            Room room = new Room(currentCoords, rooms.Count + 1);
             rooms.Add(room);
+            usedCoords.Add(currentCoords);
             roomsToCreate--;
         }
         return rooms;
     }
-    private Room CreateRoom(List<Room> rooms, DungeonSettings settings, Vector2Int coords)
-    {
-        Vector3 pos = Vector3.zero;
-        if (rooms.Count > 0)
-        {
-            pos = new Vector3(pos.x + settings.distanceBetweenRooms * coords.x, pos.y + settings.distanceBetweenRooms * coords.y, pos.z);
-            print(pos);
-        }
-        GameObject roomInstance = Instantiate(settings.roomPrefab, mapContent.transform);
-        pos = new Vector3(200f * coords.x, 200f * coords.y, 0);
-        roomInstance.transform.localPosition = pos;
-        Room newRoom = new Room(roomInstance, coords, rooms.Count + 1);       
-        return newRoom;
-    }
-
 
     private Vector2Int GetNextCoords(Vector2Int currentCoords)
     {
@@ -84,9 +60,7 @@ public class DungeonGenerator : MonoBehaviour
         if (randomNum < 0.25f) return new Vector2Int(currentCoords.x - 1, currentCoords.y);
         if (randomNum < 0.5f) return new Vector2Int(currentCoords.x + 1, currentCoords.y);
         if (randomNum < 0.75f) return new Vector2Int(currentCoords.x, currentCoords.y - 1);
-        if (randomNum < 1f) return new Vector2Int(currentCoords.x, currentCoords.y + 1);
-
-        return Vector2Int.zero;
+        return new Vector2Int(currentCoords.x, currentCoords.y + 1);
     }
 
     private Dictionary<Vector2Int, Room> CreateCoordsToRoomDictionary(List<Room> rooms)
@@ -119,7 +93,7 @@ public class DungeonGenerator : MonoBehaviour
             }
             roomToConnectedRooms[rooms[i]] = connectedRooms;
         }
-        return roomToConnectedRooms;
+        return roomToConnectedRooms;    
     }
 
     private Dictionary<string, List<Room>> CreateRoomConnectionsDict(Dictionary<Room, List<Room>> roomToConnectedRoom)
@@ -146,46 +120,23 @@ public class DungeonGenerator : MonoBehaviour
         return roomConnections;
     }
 
-    public List<Corridor> CreateCorridors(Dictionary<string, List<Room>> roomConnections)
+    public List<Corridor> CreateCorridors(Dictionary<Room, List<Room>> roomToConnectedRooms)
     {
         List<Corridor> corridors = new List<Corridor>();
-        foreach (var key in roomConnections.Keys)
+        List<Room> connectedRooms = new List<Room>();
+        foreach (var room in roomToConnectedRooms.Keys)
         {
-            var newCorridor = CreateCorridor(roomConnections[key][0], roomConnections[key][1]);
-            corridors.Add(newCorridor);
+            foreach (var connectedRoom in roomToConnectedRooms[room])
+            {
+                if (connectedRooms.Contains(connectedRoom)) continue;
+
+                var newCorridor = new Corridor(room, connectedRoom);
+                corridors.Add(newCorridor);
+            }
+            connectedRooms.Add(room);
         }
         return corridors;
     }
-
-    private Corridor CreateCorridor(Room room1, Room room2)
-    {
-        if (room1.Coords.x != room2.Coords.x && room1.Coords.y != room2.Coords.y) return null;
-
-        Corridor newCorridor = new Corridor();
-        newCorridor.AddConnectedRooms(room1, room2);
-        CreateCorridorUI(room1, room2);
-        return newCorridor;
-    }
-
-    private void CreateCorridorUI(Room room1, Room room2)
-    {
-        GameObject corridor = null;
-        Vector2 centralStepPosition;
-        if (room1.Coords.y == room2.Coords.y)
-        {
-            int xPos = (room1.Coords.x * 200 + room2.Coords.x * 200) / 2;
-            centralStepPosition = new Vector2(xPos, room1.Coords.y * 200);
-            corridor = Instantiate(settings.horizontalCorridor, mapContent.transform);
-        }
-        else
-        {
-            int yPos = (room1.Coords.y * 200 + room2.Coords.y * 200) / 2;
-            centralStepPosition = new Vector2(room1.Coords.x * 200, yPos);
-            corridor = Instantiate(settings.verticalCorridor, mapContent.transform);
-        }
-        corridor.transform.localPosition = centralStepPosition;
-    }
-
 
 }
 

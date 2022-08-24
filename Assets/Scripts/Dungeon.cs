@@ -2,17 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Dungeon : MonoBehaviour
+public class Dungeon
 {
-    [SerializeField] DungeonGenerator generator;
+    private DungeonConstuctorParameters structure;
 
-    private DungeonConstuctorParameters parameters;
-
-
-    public Dungeon(DungeonConstuctorParameters parameters)
+    public Dungeon(DungeonConstuctorParameters structure)
     {
-        this.parameters = parameters;
+        this.structure = structure;
     }
 
-    
+    public IEnumerable<Room> GetRooms()
+    {
+        return structure.rooms;
+    }
+
+    public IEnumerable<Corridor> GetCorridors()
+    {
+        return structure.corridors;
+    }
 }
